@@ -1,0 +1,83 @@
+﻿<Page
+    x:Class="PurdueDiningRT.LocationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PurdueDiningRT"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:datamodel="using:PurdueDiningRT.DataModel"
+    xmlns:converters="using:PurdueDiningRT.ValueConverters"
+    xmlns:templateselectors="using:PurdueDiningRT.TemplateSelectors"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    d:DataContext="{Binding Source={d:DesignInstance Type=datamodel:SampleDataModel, IsDesignTimeCreatable=True}, Path=Locations[0]}">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <converters:StringToUppercaseConverter x:Key="StringToUppercaseConverter" />
+            <converters:StringToLowercaseConverter x:Key="StringToLowercaseConverter" />
+        </ResourceDictionary>
+    </Page.Resources>
+    
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <NavigationThemeTransition.DefaultNavigationTransitionInfo>
+                    <ContinuumNavigationTransitionInfo/>
+                </NavigationThemeTransition.DefaultNavigationTransitionInfo>
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </Page.Transitions>
+    
+    <Grid x:Name="LayoutRoot">
+        <Pivot x:Uid="Pivot" x:Name="pivot" ItemsSource="{Binding StationOverview}">
+            <Pivot.Title>
+                <TextBlock Text="{Binding Name, Converter={StaticResource StringToUppercaseConverter}}" ContinuumNavigationTransitionInfo.IsEntranceElement="True" />
+            </Pivot.Title>
+            <Pivot.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name, Converter={StaticResource StringToLowercaseConverter}}" />
+                </DataTemplate>
+            </Pivot.HeaderTemplate>
+            <Pivot.ItemTemplateSelector>
+                <templateselectors:LocationPivotTemplateSelector>
+                    <templateselectors:LocationPivotTemplateSelector.LocationOverviewTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="HEY!" Foreground="White" />
+                        </DataTemplate>
+                    </templateselectors:LocationPivotTemplateSelector.LocationOverviewTemplate>
+                    <templateselectors:LocationPivotTemplateSelector.StationListTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <ListView ItemsSource="{Binding FoodItemCollection.View}">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}" Style="{StaticResource ListViewItemTextBlockStyle}" FontSize="20" />
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="Padding" Value="0 4" />
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.GroupStyle>
+                                        <GroupStyle HidesIfEmpty="True">
+                                            <GroupStyle.HeaderTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text='{Binding Name}' 
+                                                       Style="{StaticResource ListViewItemTextBlockStyle}"
+                                                       Foreground="{StaticResource PhoneAccentBrush}"
+                                                       Padding="0 8" />
+                                                </DataTemplate>
+                                            </GroupStyle.HeaderTemplate>
+                                        </GroupStyle>
+                                    </ListView.GroupStyle>
+                                </ListView>
+                            </Grid>
+                        </DataTemplate>
+                    </templateselectors:LocationPivotTemplateSelector.StationListTemplate>
+                </templateselectors:LocationPivotTemplateSelector>
+            </Pivot.ItemTemplateSelector>
+        </Pivot>
+    </Grid>
+</Page>
